@@ -1,0 +1,28 @@
+# --- Secrets: never commit these ---
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+credentials*.json
+service-account*.json
+
+# --- Data exports that may contain real customer data ---
+*.csv
+!**/sample-data/*.csv
+
+# --- n8n local data (workflow exports are still allowed) ---
+.n8n/
+
+# --- Operating system clutter ---
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# --- Editors, dependencies, build output, logs ---
+.vscode/
+.idea/
+node_modules/
+dist/
+build/
+*.log
