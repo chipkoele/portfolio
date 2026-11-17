@@ -34,6 +34,8 @@ New-ARR goal        €1,500,000
 
 ## Demo
 🔗 **Live demo:** https://chipkoele.github.io/portfolio/projects/reverse-funnel-calculator/
+![Desktop view](../../assets/reverse-funnel-calculator_desktop.png)
+![Mobile view](../../assets/reverse-funnel-calculator_mobile.png)
 
 ## Result / what I learned
 - I learned to think in a reverse funnel: start from the revenue goal and work backwards, instead of starting from the leads I can generate.
