@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reverse Funnel Calculator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* ---------- Design tokens (change the look in one place) ---------- */
+    :root {
+      --bg: #f5f7fb;
+      --card: #ffffff;
+      --text: #0f172a;
+      --muted: #64748b;
+      --border: #e2e8f0;
+      --accent: #4f46e5;        /* main brand colour */
+      --accent-soft: #eef2ff;
+      --radius: 14px;
+      --shadow: 0 1px 2px rgba(15, 23, 42, .04), 0 4px 16px rgba(15, 23, 42, .06);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "Inter", system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+    }
+
+    .wrap { max-width: 1080px; margin: 0 auto; padding: 32px 20px 48px; }
+
+    header { margin-bottom: 24px; }
+    .eyebrow {
+      display: inline-block; font-size: 12px; font-weight: 600; letter-spacing: .06em;
+      text-transform: uppercase; color: var(--accent); background: var(--accent-soft);
+      padding: 4px 10px; border-radius: 999px; margin-bottom: 10px;
+    }
+    h1 { font-size: clamp(26px, 4vw, 34px); margin: 0 0 6px; letter-spacing: -.02em; }
+    .sub { color: var(--muted); margin: 0; max-width: 640px; }
+
+    /* Two columns on desktop, stacked on mobile */
+    .grid { display: grid; grid-template-columns: 340px 1fr; gap: 20px; align-items: start; }
+    @media (max-width: 820px) { .grid { grid-template-columns: 1fr; } }
+
+    .card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: var(--radius); box-shadow: var(--shadow); padding: 22px;
+    }
+    .card h2 { font-size: 15px; margin: 0 0 16px; font-weight: 600; }
+
+    /* ---------- Inputs ---------- */
+    .field { margin-bottom: 16px; }
+    .field label { display: block; font-size: 13px; font-weight: 500; margin-bottom: 6px; }
+    .field .hint { font-size: 12px; color: var(--muted); margin-top: 4px; }
+    .input-box {
+      display: flex; align-items: center; border: 1px solid var(--border);
+      border-radius: 10px; background: #fff; transition: border-color .15s, box-shadow .15s;
+    }
+    .input-box:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+    .input-box span { color: var(--muted); padding: 0 12px; font-size: 14px; }
+    .input-box input {
+      flex: 1; min-width: 0; border: 0; outline: 0; background: transparent;
+      font: inherit; font-size: 16px; padding: 11px 12px;
+    }
+    .input-box span + input { padding-left: 0; }
+    .divider { height: 1px; background: var(--border); margin: 20px 0 16px; }
+    .error { color: #b91c1c; font-size: 13px; margin-top: 8px; display: none; }
+
+    /* ---------- Headline result ---------- */
+    .headline {
+      background: var(--accent); color: #fff; border-radius: var(--radius);
+      padding: 22px; margin-bottom: 20px; box-shadow: var(--shadow);
+    }
+    .headline .label { opacity: .85; font-size: 14px; }
+    .headline .big { font-size: clamp(36px, 6vw, 48px); font-weight: 700; letter-spacing: -.02em; line-height: 1.1; margin: 4px 0; }
+    .headline .small { opacity: .85; font-size: 14px; }
+
+    /* ---------- Funnel visual ---------- */
+    .funnel { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+    .bar {
+      height: 54px; border-radius: 10px; display: flex; align-items: center;
+      justify-content: space-between; padding: 0 16px; color: #fff;
+      font-weight: 600; min-width: 220px; max-width: 100%;
+      transition: width .35s ease;
+    }
+    .bar .name { font-size: 14px; font-weight: 500; opacity: .95; }
+    .bar .count { font-size: 18px; }
+    .rate { font-size: 12px; color: var(--muted); padding: 2px 0; }
+    .rate b { color: var(--text); }
+
+    /* ---------- Results table ---------- */
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 14px; }
+    th, td { text-align: right; padding: 10px 8px; border-bottom: 1px solid var(--border); }
+    th:first-child, td:first-child { text-align: left; }
+    th { font-size: 12px; color: var(--muted); font-weight: 500; text-transform: uppercase; letter-spacing: .04em; }
+    td { font-variant-numeric: tabular-nums; }
+    tr:last-child td { border-bottom: 0; }
+    .dot { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 8px; vertical-align: middle; }
+
+    footer { margin-top: 28px; color: var(--muted); font-size: 12px; text-align: center; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <span class="eyebrow">B2B SaaS · Pipeline planning</span>
+      <h1>Reverse Funnel Calculator</h1>
+      <p class="sub">Start with your new-ARR goal and work backwards to the deals, opportunities, SQLs and MQLs you need.</p>
+    </header>
+
+    <div class="grid">
+      <!-- ========== LEFT: inputs ========== -->
+      <section class="card" aria-label="Inputs">
+        <h2>Your numbers</h2>
+
+        <div class="field">
+          <label for="arr">New ARR goal</label>
+          <div class="input-box"><span>€</span><input id="arr" type="number" inputmode="numeric" min="0" step="10000" value="1500000"></div>
+          <div class="hint">Extra annual recurring revenue from new customers.</div>
+        </div>
+
+        <div class="field">
+          <label for="acv">Average contract value (ACV)</label>
+          <div class="input-box"><span>€</span><input id="acv" type="number" inputmode="numeric" min="1" step="1000" value="30000"></div>
+          <div class="hint">What one new customer pays per year, on average.</div>
+        </div>
+
+        <div class="divider"></div>
+        <h2>Conversion rates</h2>
+
+        <div class="field">
+          <label for="mqlSql">MQL → SQL</label>
+          <div class="input-box"><input id="mqlSql" type="number" inputmode="decimal" min="1" max="100" step="1" value="30"><span>%</span></div>
+        </div>
+
+        <div class="field">
+          <label for="sqlOpp">SQL → Opportunity</label>
+          <div class="input-box"><input id="sqlOpp" type="number" inputmode="decimal" min="1" max="100" step="1" value="60"><span>%</span></div>
+        </div>
+
+        <div class="field">
+          <label for="win">Win rate (Opportunity → Deal)</label>
+          <div class="input-box"><input id="win" type="number" inputmode="decimal" min="1" max="100" step="1" value="25"><span>%</span></div>
+        </div>
+
+        <div class="error" id="error">Enter an ACV above 0 and rates between 1% and 100%.</div>
+      </section>
+
+      <!-- ========== RIGHT: results ========== -->
+      <section aria-label="Results">
+        <div class="headline">
+          <div class="label">Marketing needs to deliver</div>
+          <div class="big" id="headlineMonth">–</div>
+          <div class="small" id="headlineYear">–</div>
+        </div>
+
+        <div class="card">
+          <h2>Your funnel (per year)</h2>
+          <div class="funnel" id="funnel"></div>
+
+          <table>
+            <thead><tr><th>Stage</th><th>Per year</th><th>Per month</th></tr></thead>
+            <tbody id="table"></tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+
+    <footer>Every stage is rounded up: you can't win part of a deal. Built by Chip Koele.</footer>
+  </div>
+
+  <script>
+    // ---------- 1. Helpers ----------
+    const $ = (id) => document.getElementById(id);
+    const num = (id) => parseFloat($(id).value);
+    const fmt = (n) => n.toLocaleString("en-GB");
+    const euro = (n) => "€" + n.toLocaleString("en-GB", { maximumFractionDigits: 0 });
+
+    // Colours from wide (top of funnel) to narrow (bottom)
+    const COLORS = ["#a5b4fc", "#818cf8", "#6366f1", "#4338ca"];
+
+    // ---------- 2. The reverse-funnel maths ----------
+    // Work backwards: revenue → deals → opps → SQLs → MQLs.
+    // Math.ceil rounds UP, so you never plan for slightly too few.
+    function calculate(arr, acv, mqlSql, sqlOpp, win) {
+      const deals = Math.ceil(arr / acv);
+      const opps  = Math.ceil(deals / (win / 100));
+      const sqls  = Math.ceil(opps / (sqlOpp / 100));
+      const mqls  = Math.ceil(sqls / (mqlSql / 100));
+      return { deals, opps, sqls, mqls };
+    }
+
+    // ---------- 3. Draw the results on the page ----------
+    function render() {
+      const arr = num("arr"), acv = num("acv");
+      const mqlSql = num("mqlSql"), sqlOpp = num("sqlOpp"), win = num("win");
+
+      // Simple validation: stop if something would break the maths
+      const rates = [mqlSql, sqlOpp, win];
+      const valid = arr >= 0 && acv > 0 && rates.every(r => r > 0 && r <= 100);
+      $("error").style.display = valid ? "none" : "block";
+      if (!valid) return;
+
+      const r = calculate(arr, acv, mqlSql, sqlOpp, win);
+
+      // Stages from top to bottom, with the rate INTO the next stage
+      const stages = [
+        { name: "MQLs",          value: r.mqls,  rateToNext: mqlSql },
+        { name: "SQLs",          value: r.sqls,  rateToNext: sqlOpp },
+        { name: "Opportunities", value: r.opps,  rateToNext: win },
+        { name: "Deals won",     value: r.deals, rateToNext: null }
+      ];
+
+      // Headline
+      $("headlineMonth").textContent = fmt(Math.ceil(r.mqls / 12)) + " MQLs / month";
+      $("headlineYear").textContent  = fmt(r.mqls) + " MQLs per year to reach " + euro(arr) + " new ARR";
+
+      // Funnel bars: width relative to the MQL count (biggest = 100%)
+      const max = r.mqls || 1;
+      $("funnel").innerHTML = stages.map((s, i) => {
+        const width = Math.max((s.value / max) * 100, 0);
+        const bar = `<div class="bar" style="width:${width}%; background:${COLORS[i]}">
+                       <span class="name">${s.name}</span><span class="count">${fmt(s.value)}</span>
+                     </div>`;
+        const rate = s.rateToNext !== null
+          ? `<div class="rate">↓ <b>${s.rateToNext}%</b> convert</div>` : "";
+        return bar + rate;
+      }).join("");
+
+      // Table: per year and per month
+      $("table").innerHTML = stages.map((s, i) => `
+        <tr>
+          <td><span class="dot" style="background:${COLORS[i]}"></span>${s.name}</td>
+          <td>${fmt(s.value)}</td>
+          <td>${fmt(Math.ceil(s.value / 12))}</td>
+        </tr>`).join("");
+    }
+
+    // ---------- 4. Recalculate whenever any input changes ----------
+    document.querySelectorAll("input").forEach(el => el.addEventListener("input", render));
+    render();
+  </script>
+</body>
+</html>
