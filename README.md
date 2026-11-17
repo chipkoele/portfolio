@@ -4,7 +4,7 @@
 
 I build measurable inbound engines: campaigns, automations and dashboards that show what turns into pipeline. This repo collects the tools, AI agents and campaigns I build, each with a live demo or a short video.
 
-🌐 **Portfolio website:** _coming soon_ · 💼 **LinkedIn:** _add your LinkedIn URL here_
+🌐 **Portfolio website:** _coming soon_ · 💼 **LinkedIn:** [linkedin.com/in/chip-koele-5592b2a4](https://www.linkedin.com/in/chip-koele-5592b2a4/)
 
 ---
 
