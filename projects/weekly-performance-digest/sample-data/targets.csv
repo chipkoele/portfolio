@@ -1,0 +1,8 @@
+channel,target_cost_per_mql_eur,target_mqls_per_week,target_mql_to_sql_pct
+Google Ads - Search,220,12,40
+LinkedIn Ads,350,10,35
+Meta Ads,300,4,25
+Capterra PPC,250,6,45
+Organic Search,,8,35
+Webinar & Email,100,4,30
+TOTAL,250,45,35

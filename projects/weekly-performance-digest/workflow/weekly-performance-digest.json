@@ -1,0 +1,281 @@
+{
+  "name": "Weekly Performance Digest",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "weeks",
+              "triggerAtDay": [
+                1
+              ],
+              "triggerAtHour": 8
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        0,
+        0
+      ],
+      "id": "7f1fc964-219b-414e-bfff-02493adc7d2f",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "url": "PASTE_YOUR_PUBLISHED_CSV_LINK_FOR_weekly_data_TAB",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        224,
+        0
+      ],
+      "id": "87aefab2-9505-4aeb-8035-52aa79376279",
+      "name": "Get weekly data"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1.2,
+      "position": [
+        448,
+        0
+      ],
+      "id": "aa4c2eee-14ca-45dd-afec-a2dd78f0c1d0",
+      "name": "Parse weekly data"
+    },
+    {
+      "parameters": {
+        "url": "PASTE_YOUR_PUBLISHED_CSV_LINK_FOR_targets_TAB",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        672,
+        0
+      ],
+      "id": "4651dab7-5692-4c3d-b752-5a0d11393f52",
+      "name": "Get targets",
+      "executeOnce": true
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1.2,
+      "position": [
+        896,
+        0
+      ],
+      "id": "4c4d0784-347c-4338-a4be-ab2290adfe42",
+      "name": "Parse targets"
+    },
+    {
+      "parameters": {
+        "jsCode": "// ===== Weekly Performance Digest – calculations =====\n// Per channel: last week vs the week before (week-on-week),\n// cost per MQL, MQL→SQL %, and the gap to target.\n\nconst rows = $('Parse weekly data').all().map(i => i.json);\nconst targetRows = $('Parse targets').all().map(i => i.json);\n\nconst num = v => Number(String(v ?? '').replace(',', '.')) || 0;\nconst round = (v, d = 0) => v === null ? null : Math.round(v * 10 ** d) / 10 ** d;\nconst pctChange = (now, before) => (before ? round((now - before) / before * 100, 1) : null);\n\n// 1. Newest week in the sheet = \"this week\", the one before = \"last week\"\nconst weeks = [...new Set(rows.map(r => r.week_start))].sort();\nconst lastWeek = weeks[weeks.length - 1];\nconst prevWeek = weeks[weeks.length - 2];\n\n// 2. Targets as a lookup: channel -> targets\nconst targets = {};\nfor (const t of targetRows) {\n  targets[t.channel] = {\n    cost_per_mql: t.target_cost_per_mql_eur === '' ? null : num(t.target_cost_per_mql_eur),\n    mqls_per_week: num(t.target_mqls_per_week),\n    mql_to_sql_pct: num(t.target_mql_to_sql_pct),\n  };\n}\n\n// 3. Metrics for one row\nfunction metrics(r) {\n  const spend = num(r.spend_eur), mqls = num(r.mqls), sqls = num(r.sqls);\n  return {\n    spend, clicks: num(r.clicks), sessions: num(r.sessions),\n    form_submissions: num(r.form_submissions), mqls, sqls,\n    cost_per_mql: spend > 0 && mqls > 0 ? round(spend / mqls) : null,\n    mql_to_sql_pct: mqls > 0 ? round(sqls / mqls * 100, 1) : null,\n  };\n}\n\nfunction compare(name, nowRaw, beforeRaw) {\n  const now = metrics(nowRaw), before = metrics(beforeRaw);\n  const t = targets[name] || {};\n  return {\n    channel: name,\n    this_week: now,\n    last_week: before,\n    wow_change_pct: {\n      spend: pctChange(now.spend, before.spend),\n      mqls: pctChange(now.mqls, before.mqls),\n      sqls: pctChange(now.sqls, before.sqls),\n      cost_per_mql: pctChange(now.cost_per_mql, before.cost_per_mql),\n    },\n    target: t,\n    vs_target: {\n      cost_per_mql_pct: now.cost_per_mql !== null && t.cost_per_mql\n        ? round((now.cost_per_mql / t.cost_per_mql - 1) * 100, 1) : null,\n      mqls_vs_target: t.mqls_per_week ? now.mqls - t.mqls_per_week : null,\n      mql_to_sql_pts: now.mql_to_sql_pct !== null && t.mql_to_sql_pct\n        ? round(now.mql_to_sql_pct - t.mql_to_sql_pct, 1) : null,\n    },\n  };\n}\n\n// 4. One block per channel + a TOTAL\nconst channels = [...new Set(rows.map(r => r.channel))];\nconst sumWeek = week => {\n  const s = {};\n  for (const r of rows.filter(r => r.week_start === week))\n    for (const k of ['spend_eur', 'clicks', 'sessions', 'form_submissions', 'mqls', 'sqls'])\n      s[k] = (s[k] || 0) + num(r[k]);\n  return s;\n};\n\nconst result = channels.map(ch =>\n  compare(ch,\n    rows.find(r => r.channel === ch && r.week_start === lastWeek) || {},\n    rows.find(r => r.channel === ch && r.week_start === prevWeek) || {})\n);\nconst total = compare('TOTAL', sumWeek(lastWeek), sumWeek(prevWeek));\n\nreturn [{ json: { week: lastWeek, previous_week: prevWeek, total, channels: result } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1120,
+        0
+      ],
+      "id": "58e2e2a9-62c1-463a-abff-a3a5f87aadc1",
+      "name": "Calculate KPIs"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-3.1-flash-lite",
+          "mode": "list",
+          "cachedResultName": "Gemini 3.1 Flash Lite"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=You are a senior B2B SaaS growth analyst writing a weekly digest for the Head of Growth.\n\nBelow is last week's marketing performance per channel. All numbers are already calculated in code: week-on-week change (wow_change_pct), cost per MQL in EUR, MQL-to-SQL %, and the gap to target (vs_target). Do NOT recalculate anything; use these numbers exactly as given.\n\nGive at most 8 recommendations, ordered by impact on pipeline. Each one is exactly one of:\n- SCALE: cost per MQL clearly below target and MQL-to-SQL at or above target. Suggest a concrete budget increase.\n- KEEP: on or close to target, or too early to judge.\n- STOP: cost per MQL far above target with weak SQL quality, or no SQLs at all. Suggest where to move the budget.\n\nChannels without spend (organic, webinar) are judged on MQLs vs target and MQL-to-SQL %.\nEach recommendation: the action and channel, one sentence with the 1-2 numbers that justify it, and one concrete next step.\n\nReturn ONLY an HTML fragment, no markdown, no text before or after:\n<ol><li><b>SCALE – Google Ads - Search:</b> reason with numbers. <i>Next step:</i> action.</li> ... </ol>\n\nData:\n{{ JSON.stringify($json) }}"
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1.2,
+      "position": [
+        1344,
+        0
+      ],
+      "id": "23856cfd-6a71-47bc-9d99-0ddfb9fc924c",
+      "name": "AI recommendations",
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000,
+      "credentials": {
+        "googlePalmApi": {
+          "id": "SET_UP_IN_N8N",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// ===== Weekly Performance Digest – build the email =====\n// Combines the calculated KPIs with the AI recommendations into one HTML email.\n\nconst k = $('Calculate KPIs').first().json;\nlet recs = $json.content?.parts?.[0]?.text ?? $json.text ?? '';\nrecs = recs.replace(/```html|```/g, '').trim();   // remove code fences if the AI adds them\n\nconst eur = v => v === null || v === undefined ? '–' : '€' + Math.round(v).toLocaleString('en-GB');\nconst pct = v => v === null || v === undefined ? '–' : (v > 0 ? '+' : '') + v + '%';\nconst colour = v => v === null || v === undefined ? '#666' : v <= 0 ? '#1a7f37' : v <= 20 ? '#b58100' : '#cf222e';\n\nconst t = k.total;\nconst weekLabel = new Date(k.week).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });\n\nconst rows = k.channels.map(c => `\n  <tr>\n    <td style=\"padding:6px 8px;border-bottom:1px solid #eee\">${c.channel}</td>\n    <td style=\"padding:6px 8px;border-bottom:1px solid #eee;text-align:right\">${eur(c.this_week.spend)}</td>\n    <td style=\"padding:6px 8px;border-bottom:1px solid #eee;text-align:right\">${c.this_week.mqls} <span style=\"color:#666\">(${pct(c.wow_change_pct.mqls)})</span></td>\n    <td style=\"padding:6px 8px;border-bottom:1px solid #eee;text-align:right\">${eur(c.this_week.cost_per_mql)}</td>\n    <td style=\"padding:6px 8px;border-bottom:1px solid #eee;text-align:right;color:${colour(c.vs_target.cost_per_mql_pct)}\">${pct(c.vs_target.cost_per_mql_pct)}</td>\n    <td style=\"padding:6px 8px;border-bottom:1px solid #eee;text-align:right\">${c.this_week.mql_to_sql_pct ?? '–'}%</td>\n  </tr>`).join('');\n\nconst html = `\n<div style=\"font-family:Arial,Helvetica,sans-serif;max-width:680px;color:#1f2328\">\n  <h2 style=\"margin:0 0 4px\">Weekly Performance Digest</h2>\n  <div style=\"color:#666;margin-bottom:16px\">Week of ${weekLabel} vs previous week</div>\n\n  <div style=\"background:#f6f8fa;border-radius:8px;padding:12px 16px;margin-bottom:20px;line-height:1.6\">\n    <b>${t.this_week.mqls} MQLs</b> (${pct(t.wow_change_pct.mqls)} WoW, target ${t.target.mqls_per_week}) ·\n    <b>${t.this_week.sqls} SQLs</b> (${pct(t.wow_change_pct.sqls)}) ·\n    <b>${eur(t.this_week.spend)}</b> spend (${pct(t.wow_change_pct.spend)}) ·\n    blended cost per MQL <b>${eur(t.this_week.cost_per_mql)}</b> (target ${eur(t.target.cost_per_mql)})\n  </div>\n\n  <h3 style=\"margin:0 0 8px\">Recommendations</h3>\n  <div style=\"line-height:1.5;margin-bottom:20px\">${recs}</div>\n\n  <h3 style=\"margin:0 0 8px\">Channel overview</h3>\n  <table style=\"border-collapse:collapse;width:100%;font-size:14px\">\n    <tr style=\"background:#f6f8fa;text-align:right\">\n      <th style=\"padding:6px 8px;text-align:left\">Channel</th><th style=\"padding:6px 8px\">Spend</th>\n      <th style=\"padding:6px 8px\">MQLs (WoW)</th><th style=\"padding:6px 8px\">Cost/MQL</th>\n      <th style=\"padding:6px 8px\">vs target</th><th style=\"padding:6px 8px\">MQL→SQL</th>\n    </tr>${rows}\n  </table>\n\n  <p style=\"color:#888;font-size:12px;margin-top:24px\">\n    Fictional sample data · Numbers calculated in code, recommendations by AI (check before acting) · Built with n8n + Gemini\n  </p>\n</div>`;\n\nconst subject = `Weekly digest ${weekLabel}: ${t.this_week.mqls} MQLs, ${eur(t.this_week.cost_per_mql)} per MQL`;\n\nreturn [{ json: { subject, html } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1600,
+        0
+      ],
+      "id": "dc36d981-ee5f-4171-baf3-3d5332c1f66f",
+      "name": "Build email"
+    },
+    {
+      "parameters": {
+        "fromEmail": "Weekly Digest <you@example.com>",
+        "toEmail": "you@example.com",
+        "subject": "={{ $json.subject }}",
+        "emailFormat": "html",
+        "html": "={{ $json.html }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        1824,
+        0
+      ],
+      "id": "1c7d7bd0-30a3-45ae-9323-fc555579419e",
+      "name": "Send digest",
+      "credentials": {
+        "smtp": {
+          "id": "SET_UP_IN_N8N",
+          "name": "SMTP account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get weekly data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get weekly data": {
+      "main": [
+        [
+          {
+            "node": "Parse weekly data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse weekly data": {
+      "main": [
+        [
+          {
+            "node": "Get targets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get targets": {
+      "main": [
+        [
+          {
+            "node": "Parse targets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse targets": {
+      "main": [
+        [
+          {
+            "node": "Calculate KPIs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Calculate KPIs": {
+      "main": [
+        [
+          {
+            "node": "AI recommendations",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI recommendations": {
+      "main": [
+        [
+          {
+            "node": "Build email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build email": {
+      "main": [
+        [
+          {
+            "node": "Send digest",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "nodeGroups": [],
+  "tags": []
+}
