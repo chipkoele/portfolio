@@ -42,7 +42,13 @@ Other choices:
 - Built with Claude as developer and teacher
 
 ## Demo
-🎥 **Loom walkthrough:** _coming soon_
+**Run it → digest in the inbox** (17 seconds, real run):
+
+![Demo: running the workflow and receiving the digest](../../assets/weekly-performance-digest_demo.gif)
+
+The workflow in n8n, all nodes green after a run:
+
+![n8n workflow canvas](../../assets/weekly-performance-digest_workflow.png)
 
 The digest as it lands in the inbox:
 
