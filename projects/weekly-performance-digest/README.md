@@ -18,11 +18,11 @@ The data is a Google Sheet with 8 weeks of realistic, fictional data for 6 chann
 ## How it works
 
 ```mermaid
-flowchart LR
-    A[⏰ Monday 08:00] --> B[Get weekly data<br/>+ targets<br/><i>Google Sheet → CSV</i>]
-    B --> C[Calculate KPIs<br/><i>code: WoW, cost/MQL,<br/>MQL→SQL, vs target</i>]
-    C --> D[AI recommendations<br/><i>Gemini: max 8<br/>keep / stop / scale</i>]
-    D --> E[Build email<br/><i>HTML: KPIs, recs,<br/>channel table</i>]
+flowchart TD
+    A[⏰ Monday 08:00] --> B[Get weekly data + targets<br/><i>Google Sheet → CSV</i>]
+    B --> C[Calculate KPIs<br/><i>code: WoW, cost/MQL, MQL→SQL, vs target</i>]
+    C --> D[AI recommendations<br/><i>Gemini: max 8 keep / stop / scale</i>]
+    D --> E[Build email<br/><i>HTML: KPIs, recommendations, channel table</i>]
     E --> F[📧 Send digest<br/><i>Gmail SMTP</i>]
 ```
 
