@@ -4,28 +4,30 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Reverse Funnel Calculator</title>
+  <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;800&display=swap" rel="stylesheet">
   <style>
     /* ---------- Design tokens (change the look in one place) ---------- */
     :root {
-      --bg: #f5f7fb;
+      /* Brand: from my CV (see brand kit) */
+      --bg: #f3f2f2;            /* warm off-white */
       --card: #ffffff;
-      --text: #0f172a;
-      --muted: #64748b;
-      --border: #e2e8f0;
-      --accent: #4f46e5;        /* main brand colour */
-      --accent-soft: #eef2ff;
-      --radius: 14px;
-      --shadow: 0 1px 2px rgba(15, 23, 42, .04), 0 4px 16px rgba(15, 23, 42, .06);
+      --text: #201e1d;          /* warm near-black */
+      --muted: #696767;
+      --border: #e1e0e0;
+      --accent: #ae1800;        /* CV red: small accents only */
+      --accent-soft: #f7e9e6;
+      --radius: 12px;
+      --shadow: 0 1px 2px rgba(32, 30, 29, .04), 0 4px 16px rgba(32, 30, 29, .06);
     }
 
     * { box-sizing: border-box; }
 
     body {
       margin: 0;
-      font-family: "Inter", system-ui, -apple-system, sans-serif;
+      font-family: "Archivo", system-ui, -apple-system, sans-serif;
       background: var(--bg);
       color: var(--text);
       line-height: 1.5;
@@ -35,11 +37,12 @@
 
     header { margin-bottom: 24px; }
     .eyebrow {
-      display: inline-block; font-size: 12px; font-weight: 600; letter-spacing: .06em;
-      text-transform: uppercase; color: var(--accent); background: var(--accent-soft);
-      padding: 4px 10px; border-radius: 999px; margin-bottom: 10px;
+      display: inline-block; font-size: 12px; font-weight: 600; letter-spacing: .14em;
+      text-transform: uppercase; color: var(--accent); margin-bottom: 10px;
     }
-    h1 { font-size: clamp(26px, 4vw, 34px); margin: 0 0 6px; letter-spacing: -.02em; }
+    h1 { font-size: clamp(26px, 4vw, 34px); font-weight: 800; margin: 0 0 6px; letter-spacing: -.02em; }
+    .back { display: inline-block; font-size: 14px; color: var(--muted); text-decoration: none; margin-bottom: 18px; }
+    .back:hover { color: var(--accent); }
     .sub { color: var(--muted); margin: 0; max-width: 640px; }
 
     /* Two columns on desktop, stacked on mobile */
@@ -72,11 +75,12 @@
 
     /* ---------- Headline result ---------- */
     .headline {
-      background: var(--accent); color: #fff; border-radius: var(--radius);
+      background: var(--text); color: #fff; border-radius: var(--radius);
       padding: 22px; margin-bottom: 20px; box-shadow: var(--shadow);
+      border-bottom: 4px solid var(--accent);
     }
     .headline .label { opacity: .85; font-size: 14px; }
-    .headline .big { font-size: clamp(36px, 6vw, 48px); font-weight: 700; letter-spacing: -.02em; line-height: 1.1; margin: 4px 0; }
+    .headline .big { font-size: clamp(36px, 6vw, 48px); font-weight: 800; letter-spacing: -.02em; line-height: 1.1; margin: 4px 0; }
     .headline .small { opacity: .85; font-size: 14px; }
 
     /* ---------- Funnel visual ---------- */
@@ -107,6 +111,7 @@
 <body>
   <div class="wrap">
     <header>
+      <a class="back" href="../../projects.html">← Chip Koele · All projects</a><br>
       <span class="eyebrow">B2B SaaS · Pipeline planning</span>
       <h1>Reverse Funnel Calculator</h1>
       <p class="sub">Start with your new-ARR goal and work backwards to the deals, opportunities, SQLs and MQLs you need.</p>
@@ -181,7 +186,7 @@
     const euro = (n) => "€" + n.toLocaleString("en-GB", { maximumFractionDigits: 0 });
 
     // Colours from wide (top of funnel) to narrow (bottom)
-    const COLORS = ["#a5b4fc", "#818cf8", "#6366f1", "#4338ca"];
+    const COLORS = ["#8a8887", "#605e5d", "#33312f", "#ae1800"]; // warm greys → CV red for deals won
 
     // ---------- 2. The reverse-funnel maths ----------
     // Work backwards: revenue → deals → opps → SQLs → MQLs.
