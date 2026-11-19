@@ -14,6 +14,17 @@ if (toggle && nav) {
   });
 }
 
+// "Go back" link: returns to the previous page on this site.
+// If the visitor came from elsewhere (e.g. LinkedIn), it goes to Home instead.
+document.querySelectorAll('[data-back]').forEach(link => {
+  link.addEventListener('click', e => {
+    if (document.referrer.startsWith(location.origin) && history.length > 1) {
+      e.preventDefault();
+      history.back();
+    }
+  });
+});
+
 // Footer year
 document.querySelectorAll('[data-year]').forEach(el => { el.textContent = new Date().getFullYear(); });
 
