@@ -34,15 +34,11 @@ portfolio/
 ├── projects.html        ← website: Projects (cards come from data/projects.json)
 ├── cv.html              ← website: CV
 ├── contact.html         ← website: Contact
-├── data/projects.json   ← the project cards: edit this to add a project
+├── data/projects.json   ← the project cards (see HOW-TO-UPDATE.md)
+├── HOW-TO-UPDATE.md     ← my notes on updating the website
 ├── assets/              ← screenshots, card images (assets/cards/), CSS and JS
 └── projects/            ← one folder per build, each with its own README
 ```
-
-## Updating the website
-
-**Add a project card:** copy one `{ ... }` block in `data/projects.json`, paste it at the top of the list (newest first), and change the text. Put an 800×500 image in `assets/cards/`. Every block except the last needs a comma after its closing `}`.
-Home shows the first 2 cards; Projects shows all of them.
 
 ## A note on data and spec work
 
