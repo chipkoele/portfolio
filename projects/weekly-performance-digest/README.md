@@ -33,6 +33,14 @@ Other choices:
 - **Automatic retries** on the AI step (5 tries), because external APIs have busy moments. The model is a setting: when one model was overloaded, I swapped it in seconds.
 - **No Google Cloud OAuth setup**: the sheet is read via published CSV links and email goes out via Gmail SMTP with an app password. Fine for fictional data. With real data I'd use the proper Google Sheets and Gmail nodes with OAuth.
 
+### From sample data to live data
+The demo reads a Google Sheet with fictional data, filled by hand. In production, the input can be automated without changing the rest of the workflow:
+
+- **Option A – connect the sources in n8n:** the Google Analytics node (GA4 report: sessions per channel), the HubSpot node (MQLs and SQLs per source and lifecycle stage) and the ad platforms via their APIs or a connector like Supermetrics.
+- **Option B – fill the sheet automatically:** GA4 via Google's Sheets add-on, Google Ads via a scheduled script, HubSpot via its Sheets integration or export. The workflow keeps reading the sheet.
+
+Either way, the sheet's format is the contract: one row per channel per week. The calculation, AI and email steps stay the same. The hardest part is not the connection but agreeing on definitions with Sales: what counts as an MQL, and how sources map to channels.
+
 ## Stack
 - **n8n** (self-hosted Community Edition, running in Docker)
 - **Google Sheets** as the data source (fictional sample data)
