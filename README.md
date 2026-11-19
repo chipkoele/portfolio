@@ -4,7 +4,7 @@
 
 I build measurable inbound engines: campaigns, automations and dashboards that show what turns into pipeline. This repo collects the tools, AI agents and campaigns I build, each with a live demo or a short video.
 
-🌐 **Portfolio website:** _coming soon_ · 💼 **LinkedIn:** [linkedin.com/in/chip-koele-5592b2a4](https://www.linkedin.com/in/chip-koele-5592b2a4/)
+🌐 **Portfolio website:** [chipkoele.github.io/portfolio](https://chipkoele.github.io/portfolio/) · 💼 **LinkedIn:** [linkedin.com/in/chip-koele-5592b2a4](https://www.linkedin.com/in/chip-koele-5592b2a4/)
 
 ---
 
@@ -29,10 +29,20 @@ GitHub & GitHub Pages · Claude & Claude Code · n8n · Zapier · HubSpot · GA4
 
 ```
 portfolio/
-├── README.md        ← you are here
-├── assets/          ← screenshots and images
-└── projects/        ← one folder per build, each with its own README
+├── README.md            ← you are here (shown on GitHub)
+├── index.html           ← website: Home
+├── projects.html        ← website: Projects (cards come from data/projects.json)
+├── cv.html              ← website: CV
+├── contact.html         ← website: Contact
+├── data/projects.json   ← the project cards: edit this to add a project
+├── assets/              ← screenshots, card images (assets/cards/), CSS and JS
+└── projects/            ← one folder per build, each with its own README
 ```
+
+## Updating the website
+
+**Add a project card:** copy one `{ ... }` block in `data/projects.json`, paste it at the top of the list (newest first), and change the text. Put an 800×500 image in `assets/cards/`. Every block except the last needs a comma after its closing `}`.
+Home shows the first 2 cards; Projects shows all of them.
 
 ## A note on data and spec work
 

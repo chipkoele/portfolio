@@ -1,0 +1,26 @@
+[
+  {
+    "title": "Weekly Performance Digest",
+    "status": "Built",
+    "problem": "Weekly channel reviews take hours, so budget keeps flowing to channels that don't create pipeline.",
+    "built": "An n8n workflow with one AI step: every Monday it pulls ads, GA4 and HubSpot data, calculates cost per MQL against targets and emails up to 8 keep / stop / scale recommendations.",
+    "stack": ["n8n", "Google Sheets", "Gemini AI", "JavaScript", "Gmail"],
+    "image": "assets/cards/weekly-performance-digest.jpg",
+    "imageAlt": "The weekly digest email with KPIs per channel and AI recommendations",
+    "demoLabel": "See the demo",
+    "demoUrl": "https://github.com/chipkoele/portfolio/tree/main/projects/weekly-performance-digest#demo",
+    "codeUrl": "https://github.com/chipkoele/portfolio/tree/main/projects/weekly-performance-digest"
+  },
+  {
+    "title": "Reverse Funnel Calculator",
+    "status": "Live",
+    "problem": "An ARR goal means little to a marketing team until it's translated into MQLs per month.",
+    "built": "A web app that works backwards from a new-ARR goal and conversion rates to the deals, opportunities, SQLs and MQLs needed per year and per month.",
+    "stack": ["HTML", "CSS", "JavaScript", "GitHub Pages"],
+    "image": "assets/cards/reverse-funnel-calculator.jpg",
+    "imageAlt": "The Reverse Funnel Calculator showing a funnel from ARR goal to MQLs",
+    "demoLabel": "Try it live",
+    "demoUrl": "projects/reverse-funnel-calculator/",
+    "codeUrl": "https://github.com/chipkoele/portfolio/tree/main/projects/reverse-funnel-calculator"
+  }
+]
