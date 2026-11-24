@@ -1,5 +1,17 @@
 [
   {
+    "title": "HubSpot Expert Setup",
+    "status": "Live",
+    "problem": "Leads go cold between marketing and sales, and nobody knows which channel creates pipeline.",
+    "built": "A demo HubSpot portal for a fictional bid-software SaaS: fit + engagement lead scoring, automated MQL handoff with SLA, persona nurture, and a pipeline-by-source dashboard.",
+    "stack": ["HubSpot Marketing + Sales Hub", "Workflows", "Lead scoring", "Custom reports", "Marketing Email API"],
+    "image": "assets/cards/hubspot-expert-setup.png",
+    "imageAlt": "HubSpot dashboard showing MQLs, SQLs and pipeline by lead source for the fictional company BidHarbor",
+    "demoLabel": "See the demo",
+    "demoUrl": "https://github.com/chipkoele/portfolio/tree/main/projects/hubspot-expert-setup#demo",
+    "codeUrl": "https://github.com/chipkoele/portfolio/tree/main/projects/hubspot-expert-setup"
+  },
+  {
     "title": "Weekly Performance Digest",
     "status": "Built",
     "problem": "Weekly channel reviews take hours, so budget keeps flowing to channels that don't create pipeline.",

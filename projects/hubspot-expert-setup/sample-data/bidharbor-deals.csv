@@ -1,0 +1,24 @@
+Deal name,Pipeline,Deal stage,Amount,Close date,Lead source,Contact email
+Delta Services – BidHarbor,Sales Pipeline,Contract Sent,40000,2027-01-02,Google Ads,l.hendriks@deltaservices.example.com
+Haven IT Diensten – BidHarbor,Sales Pipeline,Contract Sent,36000,2027-01-13,Google Ads,t.peeters@havenitdiensten.example.com
+Haven Services – BidHarbor,Sales Pipeline,Qualified To Buy,22000,2027-01-11,Outbound,s.bos@havenservices.example.com
+Kempen Services – BidHarbor,Sales Pipeline,Qualified To Buy,18000,2027-02-24,Webinar,a.vandijk@kempenservices.example.com
+Noordkust Infra – BidHarbor,Sales Pipeline,Qualified To Buy,48000,2027-02-16,Webinar,b.peters@noordkustinfra.example.com
+Haven Systems – BidHarbor,Sales Pipeline,Contract Sent,24000,2027-02-05,Google Ads,w.visser@havensystems.example.com
+Rivierland Infra – BidHarbor,Sales Pipeline,Decision Maker Bought-In,30000,2026-12-09,Capterra,j.maes@rivierlandinfra.example.com
+Amstel Ingenieurs – BidHarbor,Sales Pipeline,Decision Maker Bought-In,40000,2027-01-29,Capterra,s.devries@amstelingenieurs.example.com
+Dijkstra Bouwgroep – BidHarbor,Sales Pipeline,Closed Lost,22000,2026-11-11,Outbound,f.smit@dijkstrabouwgroep.example.com
+Vecht Waterbouw – BidHarbor,Sales Pipeline,Closed Lost,28000,2026-10-06,LinkedIn Ads,r.dewit@vechtwaterbouw.example.com
+Haven Waterbouw – BidHarbor,Sales Pipeline,Closed Lost,48000,2026-09-26,Google Ads,m.kok@havenwaterbouw.example.com
+Dijkstra Services – BidHarbor,Sales Pipeline,Closed Lost,18000,2026-11-16,Capterra,k.jansen@dijkstraservices.example.com
+Utrecht IT Diensten – BidHarbor,Sales Pipeline,Closed Lost,32000,2026-10-23,Google Ads,s.brouwer@utrechtitdiensten.example.com
+Schelde Ingenieurs – BidHarbor,Sales Pipeline,Closed Lost,32000,2026-10-02,LinkedIn Ads,f.willems@scheldeingenieurs.example.com
+Eemland Bouw – BidHarbor,Sales Pipeline,Closed Lost,48000,2026-10-17,Organic search,b.bos@eemlandbouw.example.com
+Duin Ingenieurs – BidHarbor,Sales Pipeline,Closed Lost,28000,2026-11-05,Google Ads,l.dekker@duiningenieurs.example.com
+Veluwe Facility – BidHarbor,Sales Pipeline,Closed Lost,22000,2026-11-09,Google Ads,e.dijkstra@veluwefacility.example.com
+Polder Systems – BidHarbor,Sales Pipeline,Closed Lost,36000,2026-11-10,Google Ads,f.hendriks@poldersystems.example.com
+Zuidas Bouw – BidHarbor,Sales Pipeline,Closed Won,40000,2026-09-25,Capterra,n.dewit@zuidasbouw.example.com
+Brabant Bouwgroep – BidHarbor,Sales Pipeline,Closed Won,40000,2026-10-27,Google Ads,g.smit@brabantbouwgroep.example.com
+Zeeland Services – BidHarbor,Sales Pipeline,Closed Won,18000,2026-11-14,Capterra,r.smits@zeelandservices.example.com
+Limburg Infra – BidHarbor,Sales Pipeline,Closed Won,22000,2026-11-06,Capterra,l.smits@limburginfra.example.com
+Maasvallei Waterbouw – BidHarbor,Sales Pipeline,Closed Won,40000,2026-10-11,Google Ads,b.vermeulen@maasvalleiwaterbouw.example.com
