@@ -14,7 +14,7 @@ I build measurable inbound engines: campaigns, automations and dashboards that s
 |---|---------|---------------|--------|
 | 1 | [Reverse Funnel Calculator](projects/reverse-funnel-calculator/) | Turning an ARR goal into MQL targets | 🟢 Live · [Live demo](https://chipkoele.github.io/portfolio/projects/reverse-funnel-calculator/) |
 | 2 | [Weekly Performance Digest](projects/weekly-performance-digest/) | AI agent that reviews weekly marketing data | 🟢 Built · [Workflow + demo](projects/weekly-performance-digest/) |
-| 3 | [HubSpot Expert Setup](projects/hubspot-expert-setup/) | Lifecycle stages, lead scoring, MQL handoff, pipeline reporting | ⏳ Planned |
+| 3 | [HubSpot Expert Setup](projects/hubspot-expert-setup/) | Lifecycle stages, lead scoring, MQL handoff, pipeline reporting | 🟢 Live · [Setup + demo](projects/hubspot-expert-setup/) |
 | 4 | [Bid/No-Bid Checklist Campaign](projects/bid-no-bid-campaign/) | Lead magnet → landing page → nurture → measurement | ⏳ Planned |
 | 5 | [Webinar Follow-up Agent](projects/webinar-follow-up-agent/) | Turning event attendees into sales follow-ups | ⏳ Planned |
 | 6 | [Content Repurposing Agent](projects/content-repurposing-agent/) | One webinar → a month of content | ⏳ Planned |
